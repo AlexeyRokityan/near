@@ -9,24 +9,23 @@ const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
     position: 'relative',
-    margin: 'calc(var(--header-height) * -1) 0 0',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '1rem',
+    padding: 'var(--header-height) 0 0',
     '@media (max-width: 465px)': {
       display: 'block',
     },
   },
   text: {
-    padding: '0 4rem 0 0',
+    margin: 'auto 4rem auto 0',
     '@media (max-width: 465px)': {
-      margin: 'var(--header-height) 0 0',
+      margin: '2rem 0',
       padding: 0,
     },
   },
   container: {
-    padding: '0 0 2rem 0',
+    margin: 'auto 0',
     '@media (max-width: 465px)': {
       width: '100%',
     },
@@ -66,6 +65,7 @@ const Content: CustomFC = () => {
             padding: '1rem 2rem',
             borderRadius: '8px',
             maxWidth: '600px',
+            margin: 0,
           }}
         >
           This page is created solely to showcase a portfolio developed using React and Typescript,

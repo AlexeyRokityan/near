@@ -7,6 +7,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(() => ({
   root: {
     textAlign: 'center',
+    '@media (max-width: 465px)': {
+      padding: '0 0 2rem',
+    },
   },
   picker: {
     position: 'relative',

@@ -72,7 +72,7 @@ const ParentContext: CustomFC = ({ children }) => {
 
       setData({
         id: accountId,
-        balance: utils.format.formatNearAmount(balance.total),
+        balance: utils.format.formatNearAmount(balance.total, 10),
       });
     }
   };

@@ -10,10 +10,8 @@ import ParentContext from './components/context';
 global.Buffer = Buffer;
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ParentContext>
-      <App />
-    </ParentContext>
-  </React.StrictMode>,
+  <ParentContext>
+    <App />
+  </ParentContext>,
   document.getElementById('root')
 );
