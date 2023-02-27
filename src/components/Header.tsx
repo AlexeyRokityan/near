@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Typography, makeStyles, Grid, Container } from '@material-ui/core';
-import { CONTRACT_ADDRESS, useParentContext } from './context';
+import { CONTRACT_ADDRESS, NUMBER_FRACTIONAL_COUNT, useParentContext } from './context';
+import { useSpring, animated } from '@react-spring/web';
 
 const useStyles = makeStyles({
   header: {
@@ -54,7 +55,16 @@ const useStyles = makeStyles({
 const Header: CustomFC = () => {
   const { data, wallet } = useParentContext();
   const [isLoading, setIsLoading] = useState(false);
+
   const classes = useStyles();
+  const spring = useSpring({
+    val: data?.balance,
+    to: { val: data?.balance },
+    config: {
+      duration: 500,
+      precision: NUMBER_FRACTIONAL_COUNT,
+    },
+  });
 
   const signOut = () => {
     wallet?.signOut();
@@ -93,7 +103,17 @@ const Header: CustomFC = () => {
             {data?.balance && (
               <Grid item style={{ marginRight: '1rem' }}>
                 <Typography className={classes.text} variant="h6">
-                  {data.balance} NEAR
+                  <animated.span>
+                    {spring.val?.to(val => {
+                      const [integerPart, fractionalPart] = val.split('.');
+                      const totalDigitsPart = (fractionalPart || '').slice(
+                        0,
+                        NUMBER_FRACTIONAL_COUNT
+                      );
+                      return [integerPart, totalDigitsPart].join('.');
+                    })}
+                  </animated.span>{' '}
+                  NEAR
                 </Typography>
               </Grid>
             )}

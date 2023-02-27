@@ -7,6 +7,7 @@ export const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || 'frontend-test-2
 
 const { keyStores, connect, Contract, WalletConnection, Account, utils } = nearAPI;
 const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+export const NUMBER_FRACTIONAL_COUNT = 10;
 
 export const config = {
   networkId: 'testnet',
@@ -23,22 +24,26 @@ type ContractType = InstanceType<typeof Contract> & {
   set(data: RGBColor): Promise<void>;
 };
 
+type WalletDataType = {
+  id?: InstanceType<typeof Account>['accountId'];
+  balance?: string;
+};
+
 type ContextType = {
-  data?: {
-    id: InstanceType<typeof Account>['accountId'];
-    balance: string;
-  };
+  data?: WalletDataType;
   contract?: ContractType;
   wallet?: InstanceType<typeof WalletConnection>;
   color: ColorType;
   setColor: React.Dispatch<React.SetStateAction<ColorType>>;
+  setData: React.Dispatch<React.SetStateAction<WalletDataType | undefined>>;
 };
 
 type ParentContextType = () => ContextType;
 
 const Context = createContext<ContextType>({} as ContextType);
 
-const defaultColor = { old: { r: 162, g: 162, b: 162 }, new: { r: 162, g: 162, b: 162 } };
+const defaultColorValue = { r: 162, g: 162, b: 162 };
+const defaultColor = { old: defaultColorValue, new: defaultColorValue };
 
 const params = qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
@@ -68,11 +73,13 @@ const ParentContext: CustomFC = ({ children }) => {
       const balance = await nearWallet.account().getAccountBalance();
       const color = await nearContract.get();
       const [r, g, b] = color;
-      setColor({ old: { r, g, b }, new: { r, g, b } });
+      const value = { r, g, b };
+
+      setColor({ old: value, new: value });
 
       setData({
         id: accountId,
-        balance: utils.format.formatNearAmount(balance.total, 10),
+        balance: utils.format.formatNearAmount(balance.total, NUMBER_FRACTIONAL_COUNT),
       });
     }
   };
@@ -95,6 +102,7 @@ const ParentContext: CustomFC = ({ children }) => {
         wallet,
         color,
         setColor,
+        setData,
       }}
     >
       {!isLoading && children}

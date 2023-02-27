@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useParentContext } from './context';
+import { NUMBER_FRACTIONAL_COUNT, useParentContext } from './context';
 import { ChromePicker, ColorChangeHandler } from 'react-color';
 import { Button, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { utils } from 'near-api-js';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -35,16 +36,21 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ColorPicker: CustomFC = () => {
-  const { contract, color, setColor } = useParentContext();
+  const { contract, color, setColor, wallet, setData, data } = useParentContext();
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
 
   const handleChangeColor = async () => {
     if (color?.new && !isLoading) {
       setIsLoading(true);
-      await contract?.set(color.new).then(() => {
+      await contract?.set(color.new).then(async () => {
         setColor({ ...color, old: color.new });
         setIsLoading(false);
+        const balance = await wallet?.account().getAccountBalance();
+        setData({
+          ...data,
+          balance: utils.format.formatNearAmount(balance?.total || '', NUMBER_FRACTIONAL_COUNT),
+        });
       });
     }
   };
